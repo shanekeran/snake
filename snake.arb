@@ -1,7 +1,7 @@
 require 'ruby2d'
 
 set background: 'black'
-set fps_cap: 3
+set fps_cap: 5
 
 GRID_SIZE = 20
 
@@ -41,16 +41,25 @@ class Snake
         end
     end
 
+    def direction(to)
+        @direction = to #method to set snakes current direction
+    end
+
 end
 
-#Create the snake
-snake = Snake.new
-snake.draw
+snake = Snake.new #Create the snake
+snake.draw #Sets the snakes size, position, direction etc
 
-update do
+update do #Actions carried out for every frame
     clear
     snake.move
     snake.draw
 end
 
-show
+on :key_down do |event| # When a key is pressed do
+    if ['left', 'right','up','down'].include?(event.key) # Is the key a valid direction?
+        snake.direction(event.key) #Set the direction to the corresponding key
+    end
+end
+
+show #Opens ruby2d window
