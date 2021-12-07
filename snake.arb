@@ -1,28 +1,50 @@
 require 'ruby2d'
 
 set background: 'navy'
+set fps_cap: 1
 
 GRID_SIZE = 20
 
 class Snake
     def initialize
         @positions = [[0,2],[1,2],[2,2],[3,2]]
+        @direction = 'down'
     end
 
     def draw
+        #Creates each sqaure snake occupies
         @positions.each do |position|
          Square.new(
              x: position[0] * GRID_SIZE,
              y: position[1] * GRID_SIZE,
-             size: GRID_SIZE,
+             size: GRID_SIZE-2, #-2 so there is a border between squares
              color: 'green'
          )
         end
     end
+
+    def snake_head
+        @positions.last #returns the position of the snakes head
+    end
+
+    def move
+        @positions.shift # removes butt end of the snake
+        case @direction
+        when 'down'
+            @positions.push([snake_head[0],snake_head[1] + 1]) #Adds new square to the end to create movement
+        end
+    end
+
 end
 
 #Create the snake
 snake = Snake.new
 snake.draw
+
+update do
+    clear
+    snake.move
+    snake.draw
+end
 
 show
