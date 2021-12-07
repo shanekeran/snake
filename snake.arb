@@ -1,14 +1,14 @@
 require 'ruby2d'
 
-set background: 'navy'
-set fps_cap: 1
+set background: 'black'
+set fps_cap: 3
 
 GRID_SIZE = 20
 
 class Snake
     def initialize
-        @positions = [[0,2],[1,2],[2,2],[3,2]]
-        @direction = 'down'
+        @positions = [[0,2],[1,2],[2,2],[3,2]] #Starting point
+        @direction = 'right' #Starting direction
     end
 
     def draw
@@ -32,6 +32,12 @@ class Snake
         case @direction
         when 'down'
             @positions.push([snake_head[0],snake_head[1] + 1]) #Adds new square to the end to create movement
+        when 'up'
+            @positions.push([snake_head[0],snake_head[1] - 1])
+        when 'left'
+            @positions.push([snake_head[0] - 1,snake_head[1]])
+        when 'right'
+            @positions.push([snake_head[0] + 1,snake_head[1]])
         end
     end
 
