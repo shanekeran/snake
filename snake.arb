@@ -2,13 +2,13 @@ require 'ruby2d'
 
 set background: 'black'
 set title: "Shane's Snake game"
-set fps_cap: 1
+set fps_cap: 6
 
 GRID_SIZE = 20
 
 class Snake
     def initialize
-        @positions = [[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2]] #Starting point
+        @positions = [[0,2],[1,2],[2,2],[3,2]] #Starting point
         @direction = 'right' #Starting direction
     end
 
@@ -52,14 +52,34 @@ class Snake
 
 end
 
+class Apple
+    def initialize
+        @position = [rand(20),rand(20)] #Starting point
+    end
+
+    def draw
+        #Creates apple sqaure
+        Square.new(
+            x: @position[0] * GRID_SIZE,
+            y: @position[1] * GRID_SIZE,
+            size: GRID_SIZE-1, #-2 so there is a border between squares
+            color: 'red'
+        )
+    end
+end
+
 snake = Snake.new #Create the snake
 snake.draw #Sets the snakes size, position, direction etc
+
+apple = Apple.new
+apple.draw
 
 
 update do #Actions carried out for every frame
     clear
     snake.move
     snake.draw
+    apple.draw
     #Checks if snake is out of bounds
     if snake.snake_head[0] > 31 || snake.snake_head[0] < 0
         close
