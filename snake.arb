@@ -1,13 +1,14 @@
 require 'ruby2d'
 
 set background: 'black'
-set fps_cap: 5
+set title: "Shane's Snake game"
+set fps_cap: 1
 
 GRID_SIZE = 20
 
 class Snake
     def initialize
-        @positions = [[0,2],[1,2],[2,2],[3,2]] #Starting point
+        @positions = [[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2]] #Starting point
         @direction = 'right' #Starting direction
     end
 
@@ -45,6 +46,10 @@ class Snake
         @direction = to #method to set snakes current direction
     end
 
+    def position
+        @positions
+    end
+
 end
 
 snake = Snake.new #Create the snake
@@ -57,12 +62,15 @@ update do #Actions carried out for every frame
     snake.draw
     #Checks if snake is out of bounds
     if snake.snake_head[0] > 31 || snake.snake_head[0] < 0
-        set background: 'red'
+        close
     elsif snake.snake_head[1] > 22 || snake.snake_head[1] < 0
-        set background: 'red'
+        close
     else
         set background: 'black'
-        
+    end
+    #Checks if snake touches itself
+    if snake.position.uniq.length < snake.position.length #checks for duplicate positions
+        close
     end
 end
 
