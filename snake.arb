@@ -96,36 +96,67 @@ class Apple
     end
 end
 
+class Score
+    def initialize #Player starts on 1 point
+        @points = 1
+    end
+
+    def draw #Places score in window
+        Text.new(
+        "Score: #{@points}",
+            x: 10, y: 4,
+            style: 'bold',
+            size: 20,
+        )
+    end
+
+    def increment #Increments score by 1
+        @points +=1
+    end
+
+    def reset
+        initialize
+    end
+
+end
+
 snake = Snake.new #Create the snake
 snake.draw #Sets the snakes size, position, direction etc
 
 apple = Apple.new
 apple.draw
 
+counter = Score.new #Creates the Score counter
+counter.draw
+
+
 update do #Actions carried out for every frame
     clear
-    if snake.position.length > 3
-        snake.move
-        snake.draw
-        apple.draw
-    end
+    snake.move
+    snake.draw
+    apple.draw
+    counter.draw
     #Checks if snake is out of bounds
     if snake.snake_head[0] > 31 || snake.snake_head[0] < 0
         snake.reset
         apple.new_position
+        counter.reset
     elsif snake.snake_head[1] > 22 || snake.snake_head[1] < 0
         snake.reset
         apple.new_position
+        counter.reset
     end
     #Checks if snake touches itself
     if snake.position.uniq.length < snake.position.length #checks for duplicate positions
         snake.reset
         apple.new_position
+        counter.reset
     end
     #Snake eats Apple
     if snake.snake_head == apple.current_position
         apple.new_position
         snake.grow
+        counter.increment
     end
     #Snake movement speed increase
     if snake.position.length > 8
