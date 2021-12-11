@@ -2,7 +2,7 @@ require 'ruby2d'
 
 set background: 'black'
 set title: "Shane's Snake game"
-set fps_cap: 6
+set fps_cap: 5
 
 GRID_SIZE = 20
 
@@ -28,6 +28,7 @@ class Snake
         @positions.last #returns the position of the snakes head
     end
 
+
     def move
         @positions.shift # removes butt end of the snake
         case @direction
@@ -51,9 +52,9 @@ class Snake
     end
 
     def grow
-        case @direction
+        case @direction #Snake grows 1 square in the direction it's travelling
         when 'down'
-            @positions.append([snake_head[0],snake_head[1] + 1]) #Adds new square to the end to create movement
+            @positions.append([snake_head[0],snake_head[1] + 1])
         when 'up'
             @positions.append([snake_head[0],snake_head[1] - 1])
         when 'left'
@@ -75,7 +76,7 @@ class Apple
         Square.new(
             x: @position[0] * GRID_SIZE,
             y: @position[1] * GRID_SIZE,
-            size: GRID_SIZE-1, #-2 so there is a border between squares
+            size: GRID_SIZE-3,
             color: 'red'
         )
     end
@@ -85,7 +86,7 @@ class Apple
     end
 
     def new_position
-        @position = [rand(20),rand(20)]
+        @position = [rand(20),rand(20)] #Sets new position for the apple when eaten
     end
 end
 
@@ -94,7 +95,6 @@ snake.draw #Sets the snakes size, position, direction etc
 
 apple = Apple.new
 apple.draw
-
 
 update do #Actions carried out for every frame
     clear
@@ -106,8 +106,6 @@ update do #Actions carried out for every frame
         close
     elsif snake.snake_head[1] > 22 || snake.snake_head[1] < 0
         close
-    else
-        set background: 'black'
     end
     #Checks if snake touches itself
     if snake.position.uniq.length < snake.position.length #checks for duplicate positions
@@ -117,6 +115,10 @@ update do #Actions carried out for every frame
     if snake.snake_head == apple.current_position
         apple.new_position
         snake.grow
+    end
+    #Snake movement speed increase
+    if snake.position.length > 8
+        snake.move
     end
 end
 
