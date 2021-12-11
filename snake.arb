@@ -79,12 +79,15 @@ class Apple
 
     def draw
         #Creates apple sqaure
-        Square.new(
+
+        Image.new(
+            'apple2.png',
             x: @position[0] * GRID_SIZE,
             y: @position[1] * GRID_SIZE,
-            size: GRID_SIZE-3,
-            color: 'red'
-        )
+            width: GRID_SIZE,
+            height: GRID_SIZE,
+            z: 10
+          )
     end
 
     def current_position
