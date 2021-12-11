@@ -92,7 +92,7 @@ class Apple
     end
 
     def new_position
-        @position = [rand(20),rand(20)] #Sets new position for the apple when eaten
+        @position = [rand(31),rand(22)] #Sets new position for the apple when eaten
     end
 end
 
@@ -104,8 +104,7 @@ class Score
     def draw #Places score in window
         Text.new(
         "Score: #{@points}",
-            x: 10, y: 4,
-            style: 'bold',
+            x: 530, y: 2, # Text position (top right)
             size: 20,
         )
     end
@@ -153,7 +152,7 @@ update do #Actions carried out for every frame
         counter.reset
     end
     #Snake eats Apple
-    if snake.snake_head == apple.current_position
+    if snake.position.include? (apple.current_position)
         apple.new_position
         snake.grow
         counter.increment
