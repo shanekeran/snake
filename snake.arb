@@ -3,14 +3,16 @@ require 'ruby2d'
 set background: 'black'
 set title: "Shane's Snake game"
 set fps_cap: 5
+set width: 640
+set height: 480
 
-GRID_SIZE = 20
+GRID_SIZE = 28
 
 class Snake
     def initialize
         @positions = [[0,2],[1,2],[2,2],[3,2]] #Starting point
         @direction = 'right' #Starting direction
-        @head_rotation = 0
+        @head_rotation = 0 # Sets starting rotation of the snake head image
     end
 
     def reset #Restarts the game
@@ -92,7 +94,7 @@ end
 
 class Apple
     def initialize
-        @position = [rand(20),rand(20)] #Starting point
+        @position = [rand(Window.width / GRID_SIZE-1),rand(Window.height / GRID_SIZE-1)] #Starting point
     end
 
     def draw
@@ -113,7 +115,7 @@ class Apple
     end
 
     def new_position
-        @position = [rand(31),rand(22)] #Sets new position for the apple when eaten
+        @position = [rand(Window.width / GRID_SIZE-1),rand(Window.height / GRID_SIZE-1)] #Sets new position for the apple when eaten
     end
 end
 
@@ -125,7 +127,7 @@ class Arena
     def draw #Display Score counter and background image
         Text.new(
         "Score: #{@points}",
-            x: 530, y: 2, # Text position (top right)
+            x: Window.width - 120, y: 2, # Text position (top right)
             size: 20,
             color: 'black'
         )
@@ -133,7 +135,7 @@ class Arena
         Image.new(
             'snake-background.png',
             x: 0, y: 0,
-            width: 640, height: 480,
+            width: Window.width, height: Window.height,
             z: -1
           )
     end
@@ -164,10 +166,11 @@ update do #Actions carried out for every frame
     apple.draw
     arena.draw
     #Checks if snake is out of bounds
-    if snake.snake_head[0] > 31 || snake.snake_head[0] < 0 || snake.snake_head[1] > 22 || snake.snake_head[1] < 0
-        snake.reset
-        apple.new_position
-        arena.reset
+    if snake.snake_head[0] == Window.width / GRID_SIZE || snake.snake_head[0] < 0 || 
+        snake.snake_head[1] == Window.height / GRID_SIZE || snake.snake_head[1] < 0
+            snake.reset
+            apple.new_position
+            arena.reset
     end
     #Checks if snake touches itself
     if snake.position.uniq.length < snake.position.length #checks for duplicate positions
