@@ -10,7 +10,7 @@ class Snake
     def initialize
         @positions = [[0,2],[1,2],[2,2],[3,2]] #Starting point
         @direction = 'right' #Starting direction
-        @rotation = 0
+        @head_rotation = 0
     end
 
     def reset #Restarts the game
@@ -21,38 +21,25 @@ class Snake
         #Creates each sqaure snake occupies
         @positions.each do |position|
             @body = Image.new(
-                'body.png',
+                'snake-body.png',
                 x: position[0] * GRID_SIZE,
                 y: position[1] * GRID_SIZE,
                 width: GRID_SIZE,
                 height: GRID_SIZE,
-                rotate: @rotation,
                 z: 10
             )
         end
         if @positions.last
             Image.new(
-                'head.png',
+                'snake-head.png',
                 x: @positions.last[0] * GRID_SIZE,
                 y: @positions.last[1] * GRID_SIZE,
                 width: GRID_SIZE,
                 height: GRID_SIZE,
-                rotate: @rotation,
+                rotate: @head_rotation,
                 z: 10
                 )
         end
-        if @positions.first
-            Image.new(
-                'butt.png',
-                x: @positions.first[0] * GRID_SIZE,
-                y: @positions.first[1] * GRID_SIZE,
-                width: GRID_SIZE,
-                height: GRID_SIZE,
-                rotate: @rotation,
-                z: 10
-              )
-        end
-        
     end
 
     def snake_head
@@ -66,16 +53,16 @@ class Snake
             case @direction
             when 'down'
                 @positions.push([snake_head[0],snake_head[1] + 1]) #Adds new square to the end to create movement
-                @rotation = 90
+                @head_rotation = 90
             when 'up'
                 @positions.push([snake_head[0],snake_head[1] - 1])
-                @rotation = 270
+                @head_rotation = 270
             when 'left'
                 @positions.push([snake_head[0] - 1,snake_head[1]])
-                @rotation = 180
+                @head_rotation = 180
             when 'right'
                 @positions.push([snake_head[0] + 1,snake_head[1]])
-                @rotation = 0
+                @head_rotation = 0
             end
         end
     end
@@ -195,9 +182,9 @@ update do #Actions carried out for every frame
         arena.increment_score
     end
     #Snake movement speed increase
-    if snake.position.length > 8
-        snake.move
-    end
+    #if snake.position.length > 8
+        #snake.move
+    #end
 end
 
 
