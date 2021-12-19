@@ -150,50 +150,76 @@ class Arena
 
 end
 
-snake = Snake.new #Create the snake
-snake.draw #Sets the snakes size, position, direction etc
+class Start_Screen
+    Text.new(
+        "Shane's Snake Game",
+        x: 50, y: 80,
+        style: 'bold',
+        size: 30,
+        color: 'green',
+        z: 10
+      )
+      Text.new(
+        "Press P to play",
+        x: 50, y: 160,
+        size: 25,
+        color: 'red',
+        z: 10
+      )
+end
 
-apple = Apple.new
-apple.draw
+start = Start_Screen.new #Opens start screen
+
+@play = false #Gameplay turned off till player hits P
+
+snake = Snake.new #Sets the snakes size, position, direction etc
+
+apple = Apple.new #Adds the apple
 
 arena = Arena.new #Creates the Score counter and background
-arena.draw
 
 update do #Actions carried out for every frame
-    clear
-    snake.move
-    snake.draw
-    apple.draw
-    arena.draw
-    #Checks if snake is out of bounds
-    if snake.snake_head[0] == Window.width / GRID_SIZE || snake.snake_head[0] < 0 || 
-        snake.snake_head[1] == Window.height / GRID_SIZE || snake.snake_head[1] < 0
+    if @play === true
+        clear
+        snake.move
+        #Makes snake, apple and arena visible
+        snake.draw
+        apple.draw
+        arena.draw
+        #Checks if snake is out of bounds
+        if snake.snake_head[0] == Window.width / GRID_SIZE || snake.snake_head[0] < 0 || 
+            snake.snake_head[1] == Window.height / GRID_SIZE || snake.snake_head[1] < 0
+                snake.reset
+                apple.new_position
+                arena.reset
+        end
+        #Checks if snake touches itself
+        if snake.position.uniq.length < snake.position.length #checks for duplicate positions
             snake.reset
             apple.new_position
             arena.reset
+        end
+        #Snake eats Apple
+        if snake.position.include? (apple.current_position)
+            apple.new_position
+            snake.grow
+            arena.increment_score
+        end
+        #Snake movement speed increase
+        #if snake.position.length > 8
+            #snake.move
+        #end
     end
-    #Checks if snake touches itself
-    if snake.position.uniq.length < snake.position.length #checks for duplicate positions
-        snake.reset
-        apple.new_position
-        arena.reset
-    end
-    #Snake eats Apple
-    if snake.position.include? (apple.current_position)
-        apple.new_position
-        snake.grow
-        arena.increment_score
-    end
-    #Snake movement speed increase
-    #if snake.position.length > 8
-        #snake.move
-    #end
 end
 
 
 on :key_down do |event| # When a key is pressed do
     if ['left', 'right','up','down'].include?(event.key) # Is the key a valid direction?
         snake.direction(event.key) #Set the direction to the corresponding key
+    end
+    if ['p'].include?(event.key)
+        @play = true
+        clear
     end
 end
 
