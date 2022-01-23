@@ -2,7 +2,7 @@ require 'ruby2d'
 
 set background: 'black'
 set title: "Shane's Snake game"
-set fps_cap: 5
+set fps_cap: 30
 set width: 640
 set height: 480
 
@@ -171,6 +171,8 @@ end
 start = Start_Screen.new #Opens start screen
 
 @play = false #Gameplay turned off till player hits P
+@frame_number = 0 #Sets frame counter to 0
+@slowness = 8 # Snakes starting speed - a slow number 8
 
 snake = Snake.new #Sets the snakes size, position, direction etc
 
@@ -179,38 +181,38 @@ apple = Apple.new #Adds the apple
 arena = Arena.new #Creates the Score counter and background
 
 update do #Actions carried out for every frame
-    if @play === true
-        clear
-        snake.move
-        #Makes snake, apple and arena visible
-        snake.draw
-        apple.draw
-        arena.draw
-        #Checks if snake is out of bounds
-        if snake.snake_head[0] == Window.width / GRID_SIZE || snake.snake_head[0] < 0 || 
-            snake.snake_head[1] == Window.height / GRID_SIZE || snake.snake_head[1] < 0
-                snake.reset
-                apple.new_position
-                arena.reset
-        end
-        #Checks if snake touches itself
-        if snake.position.uniq.length < snake.position.length #checks for duplicate positions
+    next unless @play #Doesn't execute unless the game as started
+    @frame_number += 1 #Counts each frame
+    next unless @frame_number % @slowness == 0 #Controls the speed of the game by only executing on certain frames
+    clear
+    snake.move
+    #Makes snake, apple and arena visible
+    snake.draw
+    apple.draw
+    arena.draw
+    #Checks if snake is out of bounds
+    if snake.snake_head[0] == Window.width / GRID_SIZE || snake.snake_head[0] < 0 || 
+        snake.snake_head[1] == Window.height / GRID_SIZE || snake.snake_head[1] < 0
             snake.reset
             apple.new_position
             arena.reset
-        end
-        #Snake eats Apple
-        if snake.position.include? (apple.current_position)
-            apple.new_position
-            snake.grow
-            arena.increment_score
-        end
-        #Snake movement speed increase
-        #if snake.position.length > 8
-            #snake.move
-        #end
+    end
+    #Checks if snake touches itself
+    if snake.position.uniq.length < snake.position.length #checks for duplicate positions
+        snake.reset
+        apple.new_position
+        arena.reset
+        @slowness = 8 #Resets snake back to original speed
+    end
+    #Snake eats Apple
+    if snake.position.include? (apple.current_position)
+        apple.new_position
+        snake.grow
+        arena.increment_score
+        @slowness -= 1 unless @slowness < 3 #Increases the speed of the snake
     end
 end
+
 
 
 on :key_down do |event| # When a key is pressed do
